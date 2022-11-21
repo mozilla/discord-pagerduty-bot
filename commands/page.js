@@ -1,6 +1,8 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { pagerDuty } = require('../config.json');
 const { event } = require('@pagerduty/pdjs');
+
+PAGERDUTY_ROUTING_KEY_MARKETING = process.env.PAGERDUTY_ROUTING_KEY_MARKETING;
+PAGERDUTY_ROUTING_KEY_ENGINEERING = process.env.PAGERDUTY_ROUTING_KEY_ENGINEERING;
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -32,7 +34,7 @@ module.exports = {
 		].join("\n");
 		const response = await event({
 			data: {
-				routing_key: who === "engineering" ? pagerDuty.routingKeys.engineering : pagerDuty.routingKeys.marketing,
+				routing_key: who === "engineering" ? PAGERDUTY_ROUTING_KEY_ENGINEERING : PAGERDUTY_ROUTING_KEY_MARKETING,
 				event_action: 'trigger',
 				payload: {
 					summary,

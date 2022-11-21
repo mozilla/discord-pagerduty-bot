@@ -1,16 +1,18 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { pagerDuty } = require('../config.json');
 const { api } = require('@pagerduty/pdjs');
+
+const PAGERDUTY_USER_TOKEN = process.env.PAGERDUTY_USER_TOKEN;
+const PAGERDUTY_SERVICE_IDS_QUERY_STRING = process.env.PAGERDUTY_SERVICE_IDS_QUERY_STRING;
 
 function describeIncident({ status, summary, escalation_policy }) {
   return ` - ${escalation_policy.summary} <${status}>\n\`\`\` ${summary}\`\`\``;
 }
 
 async function status() {
-  const pd = api({ token: pagerDuty.user_token });
+  const pd = api({ token: PAGERDUTY_USER_TOKEN });
 
   const statuses = "statuses[]=triggered&statuses[]=acknowledged";
-  const serviceIds = pagerDuty.serviceIdsQueryString;
+  const serviceIds = PAGERDUTY_SERVICE_IDS_QUERY_STRING;
 
   const response = await pd.get(`/incidents?${serviceIds}&${statuses}`);
   if (response.data.incidents.length === 0) {
