@@ -6,23 +6,15 @@ A discord bot for sending pagerduty alerts in response to slash commands.
 
 The bot requires discord and pagerduty authentication.
 
-config.json:
-```json
-{
-  "discord": {
-    "token": "<client secret>", 
-    "clientId": "<client id>",
-    "guildId": "<server id>",
-  },
-  "pagerDuty" : {
-    "user_token": "<pagerduty user token>",
-    "routingKeys": {
-      "engineering": "<service routing key>",
-      "marketing": "<service routing key>"
-    },
-  }
-}
-
+environment variables:
+```
+DISCORD_TOKEN
+DISCORD_CLIENT_ID
+DISCORD_GUILD_ID
+PAGERDUTY_USER_TOKEN
+PAGERDUTY_ROUTING_KEY_MARKETING
+PAGERDUTY_ROUTING_KEY_ENGINEERING
+PAGERDUTY_SERVICE_IDS_QUERY_STRING
 ```
 
 
