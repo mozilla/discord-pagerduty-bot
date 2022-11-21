@@ -38,7 +38,6 @@ module.exports = {
 				event_action: 'trigger',
 				payload: {
 					summary,
-
 					source: 'discord-pagerduty-bot',
 					severity: 'error',
 				},
