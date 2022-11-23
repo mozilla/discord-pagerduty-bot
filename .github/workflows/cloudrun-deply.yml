@@ -1,0 +1,44 @@
+name: Build and deploy discordbot to GCP cloudrun
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  IMAGE_NAME: gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.GCP_APP_NAME }}
+
+jobs:
+  deploy:
+    name: Deploy to cloudrun
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - id: 'auth'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v1'
+      # with:
+      #   project_id: ${{ secrets.GCP_PROJECT_ID }}
+      #   service_account_email: ${{ secrets.GCP_EMAIL }}
+      #   service_account_key: ${{ secrets.GCP_CREDENTIALS }}
+
+    - name: Configure Docker
+      run: gcloud auth configure-docker
+
+    # - name: Checkout repository
+    #   uses: actions/checkout@v2
+
+    - name: Build Docker image
+      run: docker build . -t $IMAGE_NAME
+
+    - name: Push Docker image
+      run: docker push $IMAGE_NAME
+
+    - name: Deploy Docker image
+      run: |
+        gcloud run deploy ${{ secrets.GCP_APP_NAME }} --image $IMAGE_NAME --region us-central1 --platform managed --set-env-vars DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN}},DISCORD_CLIENT_ID=${{ secrets.DISCORD_CLIENT_ID}},DISCORD_GUILD_ID=${{secrets.DISCORD_GUILD_ID}},PAGERDUTY_USER_TOKEN=${{secrets.PAGERDUTY_USER_TOKEN}},PAGERDUTY_ROUTING_KEY_MARKETING=${{secrets.PAGERDUTY_ROUTING_KEY_MARKETING}},PAGERDUTY_ROUTING_KEY_ENGINEERING=${{secrets.PAGERDUTY_ROUTING_KEY_ENGINEERING}},PAGERDUTY_SERVICE_IDS_QUERY_STRING='${{secrets.PAGERDUTY_SERVICE_IDS_QUERY_STRING}}' --ingress=all --no-cpu-throttling --min-instances=1
