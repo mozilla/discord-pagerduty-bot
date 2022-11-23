@@ -54,10 +54,11 @@ client.once(Events.ClientReady, c => {
 // Log in to Discord with your client's token
 client.login(DISCORD_TOKEN);
 
+// Responde on Cloudrun healthcheck: https://cloud.google.com/run/docs/container-contract#port
 app.get('/', (req, res) => {
-	res.send('Hello World!')
+	res.send('Hello Cloudrun!')
 })
 
 app.listen(port, '0.0.0.0', () => {
-	console.log('Hello world listening on port', port);
+	console.log('Hello Cloudrun listening on port', port);
 });
