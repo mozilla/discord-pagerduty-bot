@@ -2,6 +2,9 @@
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const fs = require('node:fs');
 const path = require('node:path');
+const port = process.env.PORT || 8080;
+const express = require('express');
+const app = express();
 
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
 
@@ -50,3 +53,11 @@ client.once(Events.ClientReady, c => {
 
 // Log in to Discord with your client's token
 client.login(DISCORD_TOKEN);
+
+app.get('/', (req, res) => {
+	res.send('Hello World!')
+})
+
+app.listen(port, '0.0.0.0', () => {
+	console.log('Hello world listening on port', port);
+});
